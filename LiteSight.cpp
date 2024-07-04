@@ -228,7 +228,7 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
                 sliderValueThickness = SendMessage(hSliderThickness, TBM_GETPOS, 0, 0);
 
                 // Update the global crosshair thickness
-                g_crosshairThickness = sliderValueThickness;
+                g_crosshairThickness = static_cast<int>(sliderValueThickness);
 
                 // Invalidate the main window to force it to redraw
                 HWND hMainWnd = GetParent(hDlg);
@@ -244,7 +244,7 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
                 sliderValueLength = SendMessage(hSliderLength, TBM_GETPOS, 0, 0);
 
                 // Update the global crosshair thickness
-                g_crosshairLength = sliderValueLength;
+                g_crosshairLength = static_cast<int>(sliderValueLength);
 
                 // Invalidate the main window to force it to redraw
                 HWND hMainWnd = GetParent(hDlg);
@@ -260,7 +260,7 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
                 sliderValueGap = SendMessage(hSliderGap, TBM_GETPOS, 0, 0);
 
                 // Update the global crosshair thickness
-                g_crosshairGapSize = sliderValueGap;
+                g_crosshairGapSize = static_cast<int>(sliderValueGap);
 
                 // Invalidate the main window to force it to redraw
                 HWND hMainWnd = GetParent(hDlg);
