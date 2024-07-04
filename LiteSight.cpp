@@ -1,5 +1,5 @@
-// LiteSight.cpp : Defines the entry point for the application.
-//
+// LiteSight.cpp : Light weight crosshair overlay application.
+// Author : Matthew Masel
 
 #include "framework.h"
 #include "LiteSight.h"
@@ -159,12 +159,12 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
         // Initialize slider control length
         hSliderLength = GetDlgItem(hDlg, IDC_SLIDER_LENGTH);
-        SendMessage(hSliderLength, TBM_SETRANGE, TRUE, MAKELONG(0, 30)); // Set range from 1 to 10
+        SendMessage(hSliderLength, TBM_SETRANGE, TRUE, MAKELONG(0, 60)); // Set range from 1 to 10
         SendMessage(hSliderLength, TBM_SETPOS, TRUE, sliderValueLength); // Set initial position
 
         // Initialize slider control gap
         hSliderGap = GetDlgItem(hDlg, IDC_SLIDER_GAP);
-        SendMessage(hSliderGap, TBM_SETRANGE, TRUE, MAKELONG(0, 10)); // Set range from 1 to 10
+        SendMessage(hSliderGap, TBM_SETRANGE, TRUE, MAKELONG(0, 20)); // Set range from 1 to 10
         SendMessage(hSliderGap, TBM_SETPOS, TRUE, sliderValueGap); // Set initial position
         
         return (INT_PTR)TRUE;
@@ -274,7 +274,6 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         {
         case IDOK:
             // Apply settings if OK is pressed
-            // Optionally save sliderValueColor to application state
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
 
@@ -305,7 +304,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
-        // Parse the menu selections:
+        // Parse the menu selections
         switch (wmId)
         {
         case IDM_ABOUT:
@@ -322,7 +321,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
-    // This is where we draw the crosshair!
+    // Draw the crosshair
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
@@ -332,7 +331,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         GetClientRect(hWnd, &rect);
 
         // Fill the window with a solid color
-        HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0)); // Change this to your window's background color
+        HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
         FillRect(hdc, &rect, hBrush);
         DeleteObject(hBrush);
 
@@ -372,7 +371,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 // Ctrl + Alt + C shortcut
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, SettingsProc);
-                return 0; // Ensure to return 0 to indicate message handled
+                return 0;
             }
             break;
         }
