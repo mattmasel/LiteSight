@@ -12,6 +12,10 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 COLORREF g_crosshairColor = RGB(0, 255, 0);
+// Crosshair parameters
+int g_crosshairLength = 15;
+int g_crosshairGapSize = 5;
+int g_crosshairThickness = 3;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -130,63 +134,92 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    static LRESULT sliderValue = 0; // Variable to store slider value
-    static HWND hSlider = nullptr; // Handle to the slider control
+    static LRESULT sliderValueColor = 0;
+    static LRESULT sliderValueThickness = 3;
+    static HWND hSliderColor = nullptr;
+    static HWND hSliderThickness = nullptr;
 
     switch (message)
     {
     case WM_INITDIALOG:
     {
-        // Initialize slider control
-        hSlider = GetDlgItem(hDlg, IDC_SLIDER_COLOR);
-        SendMessage(hSlider, TBM_SETRANGE, TRUE, MAKELONG(0, 255)); // Set range from 0 to 255
-        SendMessage(hSlider, TBM_SETPOS, TRUE, sliderValue); // Set initial position
+        // Initialize slider control color
+        hSliderColor = GetDlgItem(hDlg, IDC_SLIDER_COLOR);
+        SendMessage(hSliderColor, TBM_SETRANGE, TRUE, MAKELONG(0, 255)); // Set range from 0 to 255
+        SendMessage(hSliderColor, TBM_SETPOS, TRUE, sliderValueColor); // Set initial position
+
+        // Initialize slider control thickness
+        hSliderThickness = GetDlgItem(hDlg, IDC_SLIDER_THICKNESS);
+        SendMessage(hSliderThickness, TBM_SETRANGE, TRUE, MAKELONG(0, 10)); // Set range from 1 to 10
+        SendMessage(hSliderThickness, TBM_SETPOS, TRUE, sliderValueThickness); // Set initial position
+        
         return (INT_PTR)TRUE;
     }
     case WM_HSCROLL:
     {
-        if ((HWND)lParam == hSlider)
+        if ((HWND)lParam == hSliderColor)
         {
             if (LOWORD(wParam) == TB_THUMBTRACK || LOWORD(wParam) == TB_ENDTRACK)
             {
                 // Slider value changed
-                sliderValue = SendMessage(hSlider, TBM_GETPOS, 0, 0);
+                sliderValueColor = SendMessage(hSliderColor, TBM_GETPOS, 0, 0);
 
                 // Map slider value to the specified color transitions
                 COLORREF color;
-                if (sliderValue < 43)
+                if (sliderValueColor < 43)
                 {
                     // 255,0,0 to 255,255,0
-                    color = RGB(255, sliderValue * 255 / 43, 0);
+                    color = RGB(255, sliderValueColor * 255 / 43, 0);
                 }
-                else if (sliderValue < 85)
+                else if (sliderValueColor < 85)
                 {
                     // 255,255,0 to 0,255,0
-                    color = RGB(255 - ((sliderValue - 43) * 255 / 42), 255, 0);
+                    color = RGB(255 - ((sliderValueColor - 43) * 255 / 42), 255, 0);
                 }
-                else if (sliderValue < 128)
+                else if (sliderValueColor < 128)
                 {
                     // 0,255,0 to 0,255,255
-                    color = RGB(0, 255, (sliderValue - 85) * 255 / 42);
+                    color = RGB(0, 255, (sliderValueColor - 85) * 255 / 42);
                 }
-                else if (sliderValue < 170)
+                else if (sliderValueColor < 170)
                 {
                     // 0,255,255 to 0,0,255
-                    color = RGB(0, 255 - ((sliderValue - 128) * 255 / 42), 255);
+                    color = RGB(0, 255 - ((sliderValueColor - 128) * 255 / 42), 255);
                 }
-                else if (sliderValue < 213)
+                else if (sliderValueColor < 213)
                 {
                     // 0,0,255 to 255,0,255
-                    color = RGB((sliderValue - 170) * 255 / 42, 0, 255);
+                    color = RGB((sliderValueColor - 170) * 255 / 42, 0, 255);
                 }
                 else
                 {
                     // 255,0,255 to 255,0,0
-                    color = RGB(255, 0, 255 - ((sliderValue - 213) * 255 / 42));
+                    color = RGB(255, 0, 255 - ((sliderValueColor - 213) * 255 / 42));
                 }
 
                 // Update the crosshair color
                 g_crosshairColor = color;
+
+                // Invalidate the main window to force it to redraw
+                HWND hMainWnd = GetParent(hDlg);
+                InvalidateRect(hMainWnd, NULL, TRUE);
+            }
+        }
+
+        if ((HWND)lParam == hSliderThickness)
+        {
+            if (LOWORD(wParam) == TB_THUMBTRACK || LOWORD(wParam) == TB_ENDTRACK)
+            {
+                // Thickness slider value changed
+                sliderValueThickness = SendMessage(hSliderThickness, TBM_GETPOS, 0, 0);
+
+                // Update the global crosshair thickness
+                g_crosshairThickness = sliderValueThickness;
+
+                // Debug output
+                wchar_t debugOutput[100];
+                swprintf_s(debugOutput, 100, L"New thickness: %d\n", g_crosshairThickness);
+                OutputDebugString(debugOutput);
 
                 // Invalidate the main window to force it to redraw
                 HWND hMainWnd = GetParent(hDlg);
@@ -200,7 +233,7 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         {
         case IDOK:
             // Apply settings if OK is pressed
-            // Optionally save sliderValue to application state
+            // Optionally save sliderValueColor to application state
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
 
@@ -254,16 +287,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
-        // Crosshair parameters
-        float crosshairLength = 15;
-        float gapSize = 5;
-        float crosshairThickness = 3.0;
-
         RECT rect;
         GetClientRect(hWnd, &rect);
 
-        // Set up pen (Green)
-        HPEN hPen = CreatePen(PS_SOLID, crosshairThickness, g_crosshairColor);
+        // Fill the window with a solid color
+        HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0)); // Change this to your window's background color
+        FillRect(hdc, &rect, hBrush);
+        DeleteObject(hBrush);
+
+        // Set up pen
+        HPEN hPen = CreatePen(PS_SOLID, g_crosshairThickness, g_crosshairColor);
         HGDIOBJ hOldPen = SelectObject(hdc, hPen);
 
         // Center of the window
@@ -271,16 +304,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int centerY = rect.bottom / 2;
 
         // Draw horizontal lines with square edges
-        MoveToEx(hdc, centerX - crosshairLength, centerY, NULL);
-        LineTo(hdc, centerX - gapSize, centerY); // Left part of the horizontal line
-        MoveToEx(hdc, centerX + gapSize, centerY, NULL); // Right part of the horizontal line
-        LineTo(hdc, centerX + crosshairLength, centerY);
+        MoveToEx(hdc, centerX - g_crosshairLength, centerY, NULL);
+        LineTo(hdc, centerX - g_crosshairGapSize, centerY); // Left part of the horizontal line
+        MoveToEx(hdc, centerX + g_crosshairGapSize, centerY, NULL); // Right part of the horizontal line
+        LineTo(hdc, centerX + g_crosshairLength, centerY);
 
         // Draw vertical lines with square edges
-        MoveToEx(hdc, centerX, centerY - crosshairLength, NULL);
-        LineTo(hdc, centerX, centerY - gapSize); // Top part of the vertical line
-        MoveToEx(hdc, centerX, centerY + gapSize, NULL); // Bottom part of the vertical line
-        LineTo(hdc, centerX, centerY + crosshairLength);
+        MoveToEx(hdc, centerX, centerY - g_crosshairLength, NULL);
+        LineTo(hdc, centerX, centerY - g_crosshairGapSize); // Top part of the vertical line
+        MoveToEx(hdc, centerX, centerY + g_crosshairGapSize, NULL); // Bottom part of the vertical line
+        LineTo(hdc, centerX, centerY + g_crosshairLength);
 
         // Restore old pen and clean up
         SelectObject(hdc, hOldPen);

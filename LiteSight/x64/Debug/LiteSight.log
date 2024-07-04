@@ -1,11 +1,3 @@
 ﻿  LiteSight.cpp
-D:\deathstar\dev\side\LiteSight\LiteSight.cpp(266,41): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\deathstar\dev\side\LiteSight\LiteSight.cpp(274,31): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\deathstar\dev\side\LiteSight\LiteSight.cpp(275,29): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\deathstar\dev\side\LiteSight\LiteSight.cpp(276,31): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\deathstar\dev\side\LiteSight\LiteSight.cpp(277,29): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\deathstar\dev\side\LiteSight\LiteSight.cpp(280,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\deathstar\dev\side\LiteSight\LiteSight.cpp(281,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\deathstar\dev\side\LiteSight\LiteSight.cpp(282,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\deathstar\dev\side\LiteSight\LiteSight.cpp(283,38): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  LiteSight.vcxproj -> D:\deathstar\dev\side\LiteSight\x64\Debug\LiteSight.exe
+D:\deathstar\dev\working\LiteSight\LiteSight.cpp(217,40): warning C4244: '=': conversion from 'LRESULT' to 'int', possible loss of data
+  LiteSight.vcxproj -> D:\deathstar\dev\working\LiteSight\x64\Debug\LiteSight.exe
