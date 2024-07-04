@@ -1,3 +1,5 @@
 ﻿  LiteSight.cpp
-D:\deathstar\dev\working\LiteSight\LiteSight.cpp(217,40): warning C4244: '=': conversion from 'LRESULT' to 'int', possible loss of data
+D:\deathstar\dev\working\LiteSight\LiteSight.cpp(231,40): warning C4244: '=': conversion from 'LRESULT' to 'int', possible loss of data
+D:\deathstar\dev\working\LiteSight\LiteSight.cpp(247,37): warning C4244: '=': conversion from 'LRESULT' to 'int', possible loss of data
+D:\deathstar\dev\working\LiteSight\LiteSight.cpp(263,38): warning C4244: '=': conversion from 'LRESULT' to 'int', possible loss of data
   LiteSight.vcxproj -> D:\deathstar\dev\working\LiteSight\x64\Debug\LiteSight.exe

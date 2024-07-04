@@ -134,10 +134,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    static LRESULT sliderValueColor = 0;
+    static LRESULT sliderValueColor = 75;
     static LRESULT sliderValueThickness = 3;
+    static LRESULT sliderValueLength = 15;
+    static LRESULT sliderValueGap = 5;
     static HWND hSliderColor = nullptr;
     static HWND hSliderThickness = nullptr;
+    static HWND hSliderLength = nullptr;
+    static HWND hSliderGap = nullptr;
 
     switch (message)
     {
@@ -152,6 +156,16 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         hSliderThickness = GetDlgItem(hDlg, IDC_SLIDER_THICKNESS);
         SendMessage(hSliderThickness, TBM_SETRANGE, TRUE, MAKELONG(0, 10)); // Set range from 1 to 10
         SendMessage(hSliderThickness, TBM_SETPOS, TRUE, sliderValueThickness); // Set initial position
+
+        // Initialize slider control length
+        hSliderLength = GetDlgItem(hDlg, IDC_SLIDER_LENGTH);
+        SendMessage(hSliderLength, TBM_SETRANGE, TRUE, MAKELONG(0, 30)); // Set range from 1 to 10
+        SendMessage(hSliderLength, TBM_SETPOS, TRUE, sliderValueLength); // Set initial position
+
+        // Initialize slider control gap
+        hSliderGap = GetDlgItem(hDlg, IDC_SLIDER_GAP);
+        SendMessage(hSliderGap, TBM_SETRANGE, TRUE, MAKELONG(0, 10)); // Set range from 1 to 10
+        SendMessage(hSliderGap, TBM_SETPOS, TRUE, sliderValueGap); // Set initial position
         
         return (INT_PTR)TRUE;
     }
@@ -216,10 +230,37 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
                 // Update the global crosshair thickness
                 g_crosshairThickness = sliderValueThickness;
 
-                // Debug output
-                wchar_t debugOutput[100];
-                swprintf_s(debugOutput, 100, L"New thickness: %d\n", g_crosshairThickness);
-                OutputDebugString(debugOutput);
+                // Invalidate the main window to force it to redraw
+                HWND hMainWnd = GetParent(hDlg);
+                InvalidateRect(hMainWnd, NULL, TRUE);
+            }
+        }
+
+        if ((HWND)lParam == hSliderLength)
+        {
+            if (LOWORD(wParam) == TB_THUMBTRACK || LOWORD(wParam) == TB_ENDTRACK)
+            {
+                // Thickness slider value changed
+                sliderValueLength = SendMessage(hSliderLength, TBM_GETPOS, 0, 0);
+
+                // Update the global crosshair thickness
+                g_crosshairLength = sliderValueLength;
+
+                // Invalidate the main window to force it to redraw
+                HWND hMainWnd = GetParent(hDlg);
+                InvalidateRect(hMainWnd, NULL, TRUE);
+            }
+        }
+
+        if ((HWND)lParam == hSliderGap)
+        {
+            if (LOWORD(wParam) == TB_THUMBTRACK || LOWORD(wParam) == TB_ENDTRACK)
+            {
+                // Thickness slider value changed
+                sliderValueGap = SendMessage(hSliderGap, TBM_GETPOS, 0, 0);
+
+                // Update the global crosshair thickness
+                g_crosshairGapSize = sliderValueGap;
 
                 // Invalidate the main window to force it to redraw
                 HWND hMainWnd = GetParent(hDlg);
