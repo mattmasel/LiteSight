@@ -2,22 +2,16 @@
 
 Lightweight crosshair overlay application.
 
-## Installation
+## Download Instructions
 
 1. Navigate to [releases](https://github.com/mattmasel/LiteSight/releases/tag/v1.0.0)
 2. From the releases page, expand the Assests sub heading and download `LiteSight_v1.0.0.msi`
-3. Once downloaded run `LiteSight_v1.0.0.msi` to install
-4. LiteSight will be available from the start menu under `LiteSight`
-
-## Post Installation
-
-To stop this application being removed by Windows Security we need to whitelist the application:
-
-1. Search Windows Security from Options
-2. Navigate to the `Virus & threat protection` tab
-3. Select `Manage settings`
-4. Scroll down to the `Exclusions` header and select `Add or remove exclusions`
-5. Select "File" and browse to the location of `LiteSight_v1.0.0.msi`
+3. **The browser will flag the application as unsafe but it is safe to download anyway**
+4. **Windows Security will remove the installer and so it needs to be allowed and re-downloaded** (See step 5-6)
+5. Navigate to `Windows Security` > `Virus & threat protection` > `Protection history` > `Allow threat`
+6. Re-download and it will not be removed this time
+7. Once downloaded run `LiteSight_v1.0.0.msi` to install
+8. LiteSight will be available from the start menu under `LiteSight`
 
 ### Quick Download Link
 
