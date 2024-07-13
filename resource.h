@@ -22,9 +22,10 @@
 #define IDC_BUTTON1                     1007
 #define IDC_SLIDER_COLOR2               1007
 #define IDC_SLIDER_THICKNESS            1007
-#define IDC_SLIDER_THICKNESS2           1008
 #define IDC_SLIDER_LENGTH               1008
 #define IDC_SLIDER_GAP                  1009
+#define IDC_RADIO1                      1012
+#define IDC_RADIO2                      1013
 #define ID_SETTINGS_CUSTOMIZE           32771
 #define IDM_SETTINGS                    32772
 #define IDC_STATIC                      -1
@@ -36,7 +37,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1009
+#define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

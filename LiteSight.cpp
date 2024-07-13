@@ -16,6 +16,7 @@ COLORREF g_crosshairColor = RGB(0, 255, 0);
 int g_crosshairLength = 15;
 int g_crosshairGapSize = 5;
 int g_crosshairThickness = 3;
+int g_endcapStyle = PS_ENDCAP_ROUND;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -272,6 +273,25 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
+        case IDC_RADIO1:
+        case IDC_RADIO2:
+            if (HIWORD(wParam) == BN_CLICKED)
+            {
+                CheckRadioButton(hDlg, IDC_RADIO1, IDC_RADIO2, LOWORD(wParam));
+
+                if (LOWORD(wParam) == IDC_RADIO1)
+                {
+                    g_endcapStyle = PS_ENDCAP_ROUND;
+                }
+                else if (LOWORD(wParam) == IDC_RADIO2)
+                {
+                    g_endcapStyle = PS_ENDCAP_SQUARE;
+                }
+                // Invalidate the main window to force it to redraw
+                HWND hMainWnd = GetParent(hDlg);
+                InvalidateRect(hMainWnd, NULL, TRUE);
+            }
+            return (INT_PTR)TRUE;
         case IDOK:
             // Apply settings if OK is pressed
             EndDialog(hDlg, LOWORD(wParam));
@@ -335,21 +355,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         FillRect(hdc, &rect, hBrush);
         DeleteObject(hBrush);
 
-        // Set up pen
-        HPEN hPen = CreatePen(PS_SOLID, g_crosshairThickness, g_crosshairColor);
+        // Set up pen with square end caps
+        LOGBRUSH lb;
+        lb.lbStyle = BS_SOLID;
+        lb.lbColor = g_crosshairColor;
+        lb.lbHatch = 0;
+
+        HPEN hPen = ExtCreatePen(PS_GEOMETRIC | PS_SOLID | g_endcapStyle, g_crosshairThickness, &lb, 0, NULL);
         HGDIOBJ hOldPen = SelectObject(hdc, hPen);
 
         // Center of the window
         int centerX = rect.right / 2;
         int centerY = rect.bottom / 2;
 
-        // Draw horizontal lines with square edges
+        // Draw horizontal lines
         MoveToEx(hdc, centerX - g_crosshairLength, centerY, NULL);
         LineTo(hdc, centerX - g_crosshairGapSize, centerY); // Left part of the horizontal line
         MoveToEx(hdc, centerX + g_crosshairGapSize, centerY, NULL); // Right part of the horizontal line
         LineTo(hdc, centerX + g_crosshairLength, centerY);
 
-        // Draw vertical lines with square edges
+        // Draw vertical lines
         MoveToEx(hdc, centerX, centerY - g_crosshairLength, NULL);
         LineTo(hdc, centerX, centerY - g_crosshairGapSize); // Top part of the vertical line
         MoveToEx(hdc, centerX, centerY + g_crosshairGapSize, NULL); // Bottom part of the vertical line
