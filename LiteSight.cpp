@@ -13,9 +13,9 @@ WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 COLORREF g_crosshairColor = RGB(0, 255, 0);
 // Crosshair parameters
-int g_crosshairLength = 15;
-int g_crosshairGapSize = 5;
-int g_crosshairThickness = 3;
+int g_crosshairLength = 0;
+int g_crosshairGapSize = 0;
+int g_crosshairThickness = 7;
 int g_endcapStyle = PS_ENDCAP_ROUND;
 
 // Forward declarations of functions included in this code module:
