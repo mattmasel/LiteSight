@@ -4,7 +4,7 @@ Lightweight crosshair overlay application.
 
 ## Download Instructions
 
-1. Navigate to [releases](https://github.com/mattmasel/LiteSight/releases/tag/v1.1.1)
+1. Navigate to [releases](https://github.com/mattmasel/LiteSight/releases/tag/v1.2.1)
 2. From the releases page, expand the Assests sub heading and download `LiteSightInstall.zip`
 3. **Windows Security will prompt the installer as being an *unrecognized app* so click `More info` and `Run anyway`**
 4. Once downloaded run `setup.exe` to install
@@ -16,7 +16,7 @@ Lightweight crosshair overlay application.
 
 ## Usage
 
-To modify the crosshair make sure you are focused on the LiteSight application and use the following hotkey combination:
+To modify the crosshair use the following hotkey combination or right click the LiteSight icon in the system tray and select Settings:
 
 `Ctrl+Alt+C`
 
