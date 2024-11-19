@@ -117,7 +117,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowExW(
-       WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TRANSPARENT, 
+       WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW, 
        szWindowClass, 
        szTitle, 
        WS_POPUP, 
