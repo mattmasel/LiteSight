@@ -195,6 +195,15 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         hSliderGap = GetDlgItem(hDlg, IDC_SLIDER_GAP);
         SendMessage(hSliderGap, TBM_SETRANGE, TRUE, MAKELONG(0, 20)); // Set range from 1 to 10
         SendMessage(hSliderGap, TBM_SETPOS, TRUE, sliderValueGap); // Set initial position
+
+        // Initialize crosshair edge type
+        // Set default radio button selection
+        HWND hRadio1 = GetDlgItem(hDlg, IDC_RADIO1);
+        HWND hRadio2 = GetDlgItem(hDlg, IDC_RADIO2);
+
+        // Choose the default button (e.g., round by default)
+        SendMessage(hRadio1, BM_SETCHECK, BST_CHECKED, 0);
+        SendMessage(hRadio2, BM_SETCHECK, BST_UNCHECKED, 0);
         
         return (INT_PTR)TRUE;
     }
@@ -454,7 +463,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
-    switch (message)
+    switch (message) 
     {
     case WM_INITDIALOG:
         return (INT_PTR)TRUE;
