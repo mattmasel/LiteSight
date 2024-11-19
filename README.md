@@ -12,7 +12,7 @@ Lightweight crosshair overlay application.
 
 ### Quick Download Link
 
-[LiteSightInstall.zip](https://github.com/mattmasel/LiteSight/releases/download/v1.1.1/LiteSightInstall.zip)
+[LiteSightInstall.zip](https://github.com/mattmasel/LiteSight/releases/download/v1.2.1/LiteSightInstall.zip)
 
 ## Usage
 
