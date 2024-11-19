@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_25C525F5BFA6703685DCA230196EA31E"
+        "OwnerKey" = "8:_0EA935EE93024B57B43DF741105555D1"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_390924958831B9297881EF24695A2EE5"
         "OwnerKey" = "8:_0EA935EE93024B57B43DF741105555D1"
         "MsmSig" = "8:_UNDEFINED"
@@ -148,6 +154,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_25C525F5BFA6703685DCA230196EA31E"
+            {
+            "SourcePath" = "8:api-ms-win-crt-string-l1-1-0.dll"
+            "TargetName" = "8:api-ms-win-crt-string-l1-1-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_7373E1E03329493E80FCBBE2A257A138"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_390924958831B9297881EF24695A2EE5"
             {
             "SourcePath" = "8:api-ms-win-crt-heap-l1-1-0.dll"
@@ -344,15 +370,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:LiteSight"
-        "ProductCode" = "8:{A8F13051-BACE-4863-BC83-2FBFE60F5E19}"
-        "PackageCode" = "8:{1D80538A-27C4-4719-9EA5-00BF46DB5DA2}"
+        "ProductCode" = "8:{6E855140-DF9E-4B46-8365-A4AB74CED17B}"
+        "PackageCode" = "8:{F484E72F-19B4-400C-8DA5-75B14B08AE65}"
         "UpgradeCode" = "8:{A5801E16-62E6-4E59-957D-93A98A346FCA}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.1.4"
+        "ProductVersion" = "8:1.2.1"
         "Manufacturer" = "8:PotionSeller"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/mattmasel/LiteSight"

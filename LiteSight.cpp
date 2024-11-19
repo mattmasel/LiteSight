@@ -451,20 +451,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         EndPaint(hWnd, &ps);
     }
     break;
-    case WM_KEYDOWN:
-        // Handle keyboard shortcuts here
-        switch (wParam)
-        {
-        case 'C':
-            if (GetKeyState(VK_CONTROL) & 0x8000 && GetKeyState(VK_MENU) & 0x8000)
-            {
-                // Ctrl + Alt + C shortcut
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, SettingsProc);
-                return 0;
-            }
-            break;
-        }
-        break;
     case WM_DESTROY:
         Shell_NotifyIcon(NIM_DELETE, &nid); // Remove the tray icon
         PostQuitMessage(0);
