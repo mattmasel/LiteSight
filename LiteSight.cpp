@@ -136,9 +136,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static LRESULT sliderValueColor = 75;
-    static LRESULT sliderValueThickness = 3;
-    static LRESULT sliderValueLength = 15;
-    static LRESULT sliderValueGap = 5;
+    static LRESULT sliderValueThickness = 7;
+    static LRESULT sliderValueLength = 0;
+    static LRESULT sliderValueGap = 0;
     static HWND hSliderColor = nullptr;
     static HWND hSliderThickness = nullptr;
     static HWND hSliderLength = nullptr;
