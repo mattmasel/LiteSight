@@ -1,11 +1,16 @@
 // LiteSight.cpp : Light weight crosshair overlay application.
 // Author : Matthew Masel
 
+#define WINVER 0x0600        // Windows Vista or later
+#define _WIN32_WINNT 0x0600  // Windows Vista or later
+
 #include "framework.h"
 #include "LiteSight.h"
 #include <CommCtrl.h>
+#include <shellapi.h>
 
 #define MAX_LOADSTRING 100
+#define WM_TRAYICON (WM_USER + 1)
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -17,6 +22,9 @@ int g_crosshairLength = 0;
 int g_crosshairGapSize = 0;
 int g_crosshairThickness = 7;
 int g_endcapStyle = PS_ENDCAP_ROUND;
+// System Tray
+NOTIFYICONDATA nid;
+HMENU hTrayMenu;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -109,7 +117,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    HWND hWnd = CreateWindowExW(
-       WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TRANSPARENT, 
+       WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW, 
        szWindowClass, 
        szTitle, 
        WS_POPUP, 
@@ -129,6 +137,32 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
+
+   // Register the global hotkey (Ctrl + Alt + S)
+   if (!RegisterHotKey(hWnd, 1, MOD_CONTROL | MOD_ALT, 'C'))
+   {
+       MessageBox(hWnd, L"Failed to register hotkey!", L"Error", MB_OK | MB_ICONERROR);
+   }
+
+   // System Tray
+   // Initialize the NOTIFYICONDATA structure
+   ZeroMemory(&nid, sizeof(NOTIFYICONDATA));
+   nid.cbSize = sizeof(NOTIFYICONDATA);
+   nid.hWnd = hWnd;
+   nid.uID = 1; // Unique ID for the icon
+   nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+   nid.uCallbackMessage = WM_TRAYICON;
+   nid.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_LITESIGHT));
+   wcscpy_s(nid.szTip, L"LiteSight");
+
+   // Add the icon to the system tray
+   Shell_NotifyIcon(NIM_ADD, &nid);
+
+   // Create the context menu for the tray icon
+   hTrayMenu = CreatePopupMenu();
+   AppendMenu(hTrayMenu, MF_STRING, IDM_SETTINGS, L"Settings");
+   AppendMenu(hTrayMenu, MF_SEPARATOR, 0, nullptr);
+   AppendMenu(hTrayMenu, MF_STRING, IDM_EXIT, L"Exit");
 
    return TRUE;
 }
@@ -167,6 +201,15 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         hSliderGap = GetDlgItem(hDlg, IDC_SLIDER_GAP);
         SendMessage(hSliderGap, TBM_SETRANGE, TRUE, MAKELONG(0, 20)); // Set range from 1 to 10
         SendMessage(hSliderGap, TBM_SETPOS, TRUE, sliderValueGap); // Set initial position
+
+        // Initialize crosshair edge type
+        // Set default radio button selection
+        HWND hRadio1 = GetDlgItem(hDlg, IDC_RADIO1);
+        HWND hRadio2 = GetDlgItem(hDlg, IDC_RADIO2);
+
+        // Choose the default button (e.g., round by default)
+        SendMessage(hRadio1, BM_SETCHECK, BST_CHECKED, 0);
+        SendMessage(hRadio2, BM_SETCHECK, BST_UNCHECKED, 0);
         
         return (INT_PTR)TRUE;
     }
@@ -321,6 +364,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case WM_HOTKEY:
+    {
+        // Check if the hotkey is the one registered for settings (Ctrl + Shift + S)
+        if (wParam == 1) // 1 is the ID used in RegisterHotKey
+        {
+            // Open the settings dialog
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, SettingsProc);
+        }
+        break;
+    }
+    case WM_TRAYICON:
+        if (LOWORD(lParam) == WM_RBUTTONDOWN)
+        {
+            // Show the context menu
+            POINT pt;
+            GetCursorPos(&pt);
+            SetForegroundWindow(hWnd);
+            TrackPopupMenu(hTrayMenu, TPM_RIGHTBUTTON, pt.x, pt.y, 0, hWnd, nullptr);
+        }
+        break;
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
@@ -335,6 +398,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         case IDM_EXIT:
             DestroyWindow(hWnd);
+            Shell_NotifyIcon(NIM_DELETE, &nid); // Remove the tray icon
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -402,6 +466,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
+        Shell_NotifyIcon(NIM_DELETE, &nid); // Remove the tray icon
         PostQuitMessage(0);
         break;
     default:
@@ -414,7 +479,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
-    switch (message)
+    switch (message) 
     {
     case WM_INITDIALOG:
         return (INT_PTR)TRUE;
