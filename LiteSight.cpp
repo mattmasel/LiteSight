@@ -138,6 +138,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
+   // Register the global hotkey (Ctrl + Alt + S)
+   if (!RegisterHotKey(hWnd, 1, MOD_CONTROL | MOD_ALT, 'C'))
+   {
+       MessageBox(hWnd, L"Failed to register hotkey!", L"Error", MB_OK | MB_ICONERROR);
+   }
+
    // System Tray
    // Initialize the NOTIFYICONDATA structure
    ZeroMemory(&nid, sizeof(NOTIFYICONDATA));
@@ -358,6 +364,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case WM_HOTKEY:
+    {
+        // Check if the hotkey is the one registered for settings (Ctrl + Shift + S)
+        if (wParam == 1) // 1 is the ID used in RegisterHotKey
+        {
+            // Open the settings dialog
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, SettingsProc);
+        }
+        break;
+    }
     case WM_TRAYICON:
         if (LOWORD(lParam) == WM_RBUTTONDOWN)
         {
