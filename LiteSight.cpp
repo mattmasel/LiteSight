@@ -25,6 +25,8 @@ int g_endcapStyle = PS_ENDCAP_ROUND;
 // System Tray
 NOTIFYICONDATA nid;
 HMENU hTrayMenu;
+// Settings Dialog open or closed
+HWND g_hSettingsDlg = nullptr;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -138,7 +140,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
-   // Register the global hotkey (Ctrl + Alt + S)
+   // Register the global hotkey (Ctrl + Alt + C)
    if (!RegisterHotKey(hWnd, 1, MOD_CONTROL | MOD_ALT, 'C'))
    {
        MessageBox(hWnd, L"Failed to register hotkey!", L"Error", MB_OK | MB_ICONERROR);
@@ -365,15 +367,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_HOTKEY:
-    {
-        // Check if the hotkey is the one registered for settings (Ctrl + Shift + S)
-        if (wParam == 1) // 1 is the ID used in RegisterHotKey
+        if (wParam == 1) // Hotkey ID 1
         {
-            // Open the settings dialog
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, SettingsProc);
+            if (g_hSettingsDlg == nullptr || !IsWindowVisible(g_hSettingsDlg))
+            {
+                // Open the Settings dialog
+                g_hSettingsDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, SettingsProc);
+                if (g_hSettingsDlg)
+                {
+                    ShowWindow(g_hSettingsDlg, SW_SHOW);
+                }
+            }
+            else
+            {
+                // Close the Settings dialog
+                DestroyWindow(g_hSettingsDlg);
+                g_hSettingsDlg = nullptr;
+            }
         }
         break;
-    }
     case WM_TRAYICON:
         if (LOWORD(lParam) == WM_RBUTTONDOWN)
         {
@@ -453,6 +465,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_DESTROY:
         Shell_NotifyIcon(NIM_DELETE, &nid); // Remove the tray icon
+        g_hSettingsDlg = nullptr; // Update variable when dialog closed
         PostQuitMessage(0);
         break;
     default:
