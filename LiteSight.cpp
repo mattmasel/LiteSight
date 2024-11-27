@@ -194,7 +194,7 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         // Initialize slider control thickness
         hSliderThickness = GetDlgItem(hDlg, IDC_SLIDER_THICKNESS);
         SendMessage(hSliderThickness, TBM_SETRANGE, TRUE, MAKELONG(0, 10)); // Set range from 1 to 10
-        SendMessage(hSliderThickness, TBM_SETPOS, TRUE, sliderValueThickness); // Set initial position
+        SendMessage(hSliderThickness, TBM_SETPOS, TRUE, sliderValueThickness / 2); // Set initial position
 
         // Initialize slider control length
         hSliderLength = GetDlgItem(hDlg, IDC_SLIDER_LENGTH);
@@ -278,7 +278,8 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
                 sliderValueThickness = SendMessage(hSliderThickness, TBM_GETPOS, 0, 0);
 
                 // Update the global crosshair thickness
-                g_crosshairThickness = static_cast<int>(sliderValueThickness);
+                sliderValueThickness = static_cast<int>(sliderValueThickness) *2 + 1;
+                g_crosshairThickness = sliderValueThickness;
 
                 // Invalidate the main window to force it to redraw
                 HWND hMainWnd = GetParent(hDlg);
