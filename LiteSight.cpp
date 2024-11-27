@@ -27,6 +27,8 @@ NOTIFYICONDATA nid;
 HMENU hTrayMenu;
 // Settings Dialog open or closed
 HWND g_hSettingsDlg = nullptr;
+bool g_isSettingsOpen = false;
+
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -213,6 +215,8 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         SendMessage(hRadio1, BM_SETCHECK, BST_CHECKED, 0);
         SendMessage(hRadio2, BM_SETCHECK, BST_UNCHECKED, 0);
         
+        g_isSettingsOpen = true;
+
         return (INT_PTR)TRUE;
     }
     case WM_HSCROLL:
@@ -340,15 +344,23 @@ INT_PTR CALLBACK SettingsProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
         case IDOK:
             // Apply settings if OK is pressed
             EndDialog(hDlg, LOWORD(wParam));
+            g_isSettingsOpen = false;
             return (INT_PTR)TRUE;
 
         case IDCANCEL:
             // Cancel button pressed
             EndDialog(hDlg, LOWORD(wParam));
+            g_isSettingsOpen = false;
             return (INT_PTR)TRUE;
         }
         break;
+    case WM_CLOSE:
+        // Close the dialog
+        DestroyWindow(hDlg);
+        g_isSettingsOpen = false;
+        return (INT_PTR)TRUE;
     }
+
     return (INT_PTR)FALSE;
 }
 
@@ -369,7 +381,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_HOTKEY:
         if (wParam == 1) // Hotkey ID 1
         {
-            if (g_hSettingsDlg == nullptr || !IsWindowVisible(g_hSettingsDlg))
+            if (g_hSettingsDlg == nullptr || !g_isSettingsOpen)
             {
                 // Open the Settings dialog
                 g_hSettingsDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, SettingsProc);
@@ -382,6 +394,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 // Close the Settings dialog
                 DestroyWindow(g_hSettingsDlg);
+                g_isSettingsOpen = false;
                 g_hSettingsDlg = nullptr;
             }
         }
@@ -406,7 +419,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
         case IDM_SETTINGS:
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, SettingsProc);
+            if (!g_isSettingsOpen)
+            {
+                g_isSettingsOpen = true;
+                g_hSettingsDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_SETTINGS), hWnd, SettingsProc);
+                ShowWindow(g_hSettingsDlg, SW_SHOW);
+            }
             break;
         case IDM_EXIT:
             DestroyWindow(hWnd);
